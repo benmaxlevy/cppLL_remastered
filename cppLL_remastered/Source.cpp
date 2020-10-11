@@ -64,15 +64,15 @@ public:
 	int add(const int value) {
 
 		//if the pointer to the head node is null, create it!
-		if (this->head == nullptr) {
-			this->head = createNode(value);
+		if (head == nullptr) {
+			head = createNode(value);
 
 			return 0;
 		}
 		//if it's not, wait until we find the end of the ll, and then create the pointer to the next node.
 		else {
 			//make a reference point
-			auto* current_node = this->head;
+			auto* current_node = head;
 
 			while (current_node->next != nullptr) {
 				current_node = current_node->next;
@@ -87,7 +87,7 @@ public:
 
 	//find node, and return a pointer to that node
 	Node* find(const int index) {
-		auto* current_node = this->head;
+		auto* current_node = head;
 
 		for (auto i = 0; i < index; i++)
 		{
@@ -126,7 +126,7 @@ public:
 	int addAfter(const int value, const int index)
 	{
 		//store the head node for context
-		auto* current_node = this->head;
+		auto* current_node = head;
 
 		for(int i = 0; i < index; i++)
 		{
@@ -158,7 +158,43 @@ public:
 
 	int remove(const int index)
 	{
-		
+		//store the head of this ll, so that we can get the node before the passed index 
+		auto* before_to_remove = head;
+
+		for(int i = 0; i < index-1; i++)
+		{
+			if(before_to_remove->next == nullptr)
+			{
+				return 1; //error! (unable to reach the node at the index-1)
+			}
+			else
+			{
+				before_to_remove = before_to_remove->next;
+			}
+		}
+
+		//make sure that the node that we want to remove actually exists!
+		if(before_to_remove->next == nullptr)
+		{
+			return 1; //the node that we want to remove is a nullptr!
+		} else
+		{
+			if(before_to_remove->next->next == nullptr) //if there's nothing after what we want to remove
+			{
+				delete before_to_remove->next; //get rid of the node we want to remove!
+				before_to_remove->next = nullptr;
+
+				return 0;
+			} else
+			{
+				auto* const to_remove = before_to_remove->next; //store the node we want to remove
+				before_to_remove->next = before_to_remove->next->next; //set the pointer to the next node to the node after the one we want to remove.
+				
+				//delete to_remove;
+
+				return 0;
+			}
+		}
 	}
 };
 
@@ -168,6 +204,7 @@ int main() {
 	ll->add(5);
 	ll->add(6);
 	ll->add(50);
-	ll->addAfter(100, 1);
 
+	ll->remove(1);
+	cout << ll->findValue(1) << endl;
 }
